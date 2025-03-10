@@ -1,4 +1,3 @@
-"use client"
 import { FiSearch, FiMic } from "react-icons/fi"
 
 function SearchBar({ placeholder = "Search...", onChange }) {

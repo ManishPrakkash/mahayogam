@@ -1,11 +1,8 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { FiPlus, FiTrash2 } from "react-icons/fi"
 import Logo from "../components/Logo"
 import SearchBar from "../components/SearchBar"
-// import MobileStatusBar from "../components/MobileStatusBar"
 import { useAuth } from "../context/AuthContext"
 import { getCities, addCity, deleteCity, initializeSampleData } from "../lib/data"
 
@@ -19,10 +16,7 @@ function CitiesPage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    // Initialize sample data if needed
     initializeSampleData()
-
-    // Load cities
     const loadedCities = getCities()
     setCities(loadedCities)
     setFilteredCities(loadedCities)
@@ -61,8 +55,6 @@ function CitiesPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* <MobileStatusBar /> */}
-
       <div className="container max-w-md mx-auto p-4">
         <Logo />
 

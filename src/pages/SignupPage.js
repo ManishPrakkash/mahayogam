@@ -1,11 +1,7 @@
-"use client"
-
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { FiEye, FiEyeOff } from "react-icons/fi"
 import { useAuth } from "../context/AuthContext"
-// import MobileStatusBar from "../components/MobileStatusBar"
-
 function SignupPage() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
@@ -29,8 +25,6 @@ function SignupPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* <MobileStatusBar /> */}
-
       <div className="flex flex-col items-center justify-center min-h-screen p-4">
         <div className="w-full max-w-md bg-white rounded-3xl shadow-lg p-8">
           <h1 className="text-4xl font-bold text-center mb-2">Sign Up</h1>

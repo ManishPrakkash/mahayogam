@@ -1,9 +1,5 @@
-"use client"
-
 import { useState } from "react"
 import { Link } from "react-router-dom"
-// import MobileStatusBar from "../components/MobileStatusBar"
-
 function ForgotPasswordPage() {
   const [email, setEmail] = useState("")
   const [submitted, setSubmitted] = useState(false)
@@ -17,8 +13,6 @@ function ForgotPasswordPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* <MobileStatusBar /> */}
-
       <div className="flex flex-col items-center justify-center min-h-screen p-4">
         <div className="w-full max-w-md bg-white rounded-3xl shadow-lg p-8">
           <h1 className="text-4xl font-bold text-center mb-2">Forgot Password</h1>

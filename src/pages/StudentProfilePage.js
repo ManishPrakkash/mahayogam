@@ -1,11 +1,8 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { FiCheck, FiX } from "react-icons/fi"
 import { FiSunrise as Libra } from "react-icons/fi"
 import Logo from "../components/Logo"
-
 import { useAuth } from "../context/AuthContext"
 import { getStudent, updateStudentFee } from "../lib/data"
 
@@ -14,8 +11,6 @@ function StudentProfilePage() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const { cityId, batchId, studentId } = useParams()
-
-  // Get current month and previous months for fee display
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
   const currentMonthIndex = new Date().getMonth()
   const displayMonths = [
@@ -24,9 +19,8 @@ function StudentProfilePage() {
     months[(currentMonthIndex - 2 + 12) % 12],
     months[(currentMonthIndex - 3 + 12) % 12],
   ]
-
+  
   useEffect(() => {
-    // Load student
     const loadedStudent = getStudent(studentId)
     if (!loadedStudent) {
       navigate(`/cities/${cityId}/batches/${batchId}/attendance`)
@@ -56,7 +50,6 @@ function StudentProfilePage() {
 
   return (
     <div className="min-h-screen bg-[#f5e6cb]">
-      {/* <MobileStatusBar /> */}
 
       <div className="container max-w-md mx-auto p-4">
         <Logo />
@@ -71,7 +64,7 @@ function StudentProfilePage() {
               />
             </div>
             <div className="absolute -right-2 -bottom-2 w-10 h-10 rounded-full bg-[#f44336] text-white flex items-center justify-center">
-              <Libra size={20} />
+              {/* <Libra size={20} /> */}
             </div>
           </div>
 
@@ -90,9 +83,9 @@ function StudentProfilePage() {
                 key={month}
                 className="py-4 border-b border-white/20 last:border-0 flex justify-between items-center"
               >
-                <div className="text-3xl font-light text-white">{month}</div>
+                <div className="text-3xl font-light text-[#7a2a2a]">{month}</div>
                 {student.fees[month] ? (
-                  <div className="px-4 py-1 bg-[#4caf50] text-white rounded">Paid</div>
+                  <div className="px-4 py-1 bg-[#4caf50] text-[#7a2a2a] rounded">Paid</div>
                 ) : (
                   <div className="flex space-x-2">
                     <button

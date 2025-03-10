@@ -1,10 +1,7 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { FiEye, FiEyeOff } from "react-icons/fi"
 import { useAuth } from "../context/AuthContext"
-// import MobileStatusBar from "../components/MobileStatusBar"
 import { initializeSampleData } from "../lib/data"
 
 function LoginPage() {
@@ -16,7 +13,6 @@ function LoginPage() {
   const { login } = useAuth()
   const navigate = useNavigate()
 
-  // Initialize sample data
   useEffect(() => {
     initializeSampleData()
   }, [])
@@ -35,8 +31,6 @@ function LoginPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* <MobileStatusBar /> */}
-
       <div className="flex flex-col items-center justify-center min-h-screen p-4">
         <div className="w-full max-w-md bg-white rounded-3xl shadow-lg p-8">
           <h1 className="text-4xl font-bold text-center mb-2">Login</h1>

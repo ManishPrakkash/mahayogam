@@ -1,5 +1,3 @@
-"use client"
-
 import { createContext, useContext, useState, useEffect } from "react"
 
 const AuthContext = createContext()
@@ -9,7 +7,6 @@ export function AuthProvider({ children }) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Check if user is logged in
     const storedUser = localStorage.getItem("mahayogam-user")
     if (storedUser) {
       setUser(JSON.parse(storedUser))

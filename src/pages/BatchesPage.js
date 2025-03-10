@@ -1,10 +1,7 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { FiPlus, FiTrash2 } from "react-icons/fi"
 import Logo from "../components/Logo"
-// import SearchBar from "../components/SearchBar"
 import { useAuth } from "../context/AuthContext"
 import { getBatchesByCity, addBatch, deleteBatch, getCities } from "../lib/data"
 
@@ -20,7 +17,6 @@ function BatchesPage() {
   const { cityId } = useParams()
 
   useEffect(() => {
-    // Get city info
     const cities = getCities()
     const currentCity = cities.find((c) => c.id === cityId)
     if (!currentCity) {
@@ -28,8 +24,6 @@ function BatchesPage() {
       return
     }
     setCity(currentCity)
-
-    // Load batches
     const loadedBatches = getBatchesByCity(cityId)
     setBatches(loadedBatches)
     setFilteredBatches(loadedBatches)
@@ -68,13 +62,8 @@ function BatchesPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* <MobileStatusBar /> */}
-
       <div className="container max-w-md mx-auto p-4">
         <Logo />
-
-        {/* <SearchBar placeholder="Search batches..." onChange={handleSearch} /> */}
-
         <div className="mt-8 space-y-4">
           {filteredBatches.map((batch) => (
             <div

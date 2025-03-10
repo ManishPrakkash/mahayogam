@@ -19,42 +19,33 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-
-          <Route
-            path="/cities"
+          <Route path="/cities"
             element={
               <ProtectedRoute>
                 <CitiesPage />
               </ProtectedRoute>
-            }
-          />
-
+            }/>
           <Route
             path="/cities/:cityId/batches"
             element={
               <ProtectedRoute>
                 <BatchesPage />
               </ProtectedRoute>
-            }
-          />
-
+            }/>
           <Route
             path="/cities/:cityId/batches/:batchId/attendance"
             element={
               <ProtectedRoute>
                 <AttendancePage />
               </ProtectedRoute>
-            }
-          />
-
+            }/>
           <Route
             path="/cities/:cityId/batches/:batchId/students/:studentId"
             element={
               <ProtectedRoute>
                 <StudentProfilePage />
               </ProtectedRoute>
-            }
-          />
+            }/>
         </Routes>
       </Router>
     </AuthProvider>
