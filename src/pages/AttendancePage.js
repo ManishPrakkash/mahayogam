@@ -1,44 +1,43 @@
-import { useState, useEffect } from "react"
-import { useParams, useNavigate } from "react-router-dom"
-import { FiCheck, FiPlus, FiSliders, FiX } from "react-icons/fi"
-import Logo from "../components/Logo"
-import SearchBar from "../components/SearchBar"
-import { useAuth } from "../context/AuthContext"
-import { getStudentsByBatch, updateStudentAttendance, getBatches, addStudent } from "../lib/data"
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { FiCheck, FiPlus, FiSliders, FiX, FiTrash2, FiEye } from "react-icons/fi";
+import Logo from "../components/Logo";
+import SearchBar from "../components/SearchBar";
+import { useAuth } from "../context/AuthContext";
+import { getStudentsByBatch, updateStudentAttendance, getBatches, addStudent, deleteStudent } from "../lib/data";
 
 function AttendancePage() {
-  const [students, setStudents] = useState([])
-  const [batch, setBatch] = useState(null)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [currentDate] = useState(new Date().toISOString().split("T")[0])
-  const { user, isLoading } = useAuth()
-  const navigate = useNavigate()
-  const { cityId, batchId } = useParams()
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [newStudentName, setNewStudentName] = useState("")
+  const [students, setStudents] = useState([]);
+  const [batch, setBatch] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentDate] = useState(new Date().toISOString().split("T")[0]);
+  const { user, isLoading } = useAuth();
+  const navigate = useNavigate();
+  const { cityId, batchId } = useParams();
+  const [newStudentName, setNewStudentName] = useState("");
 
   useEffect(() => {
-    const batches = getBatches()
-    const currentBatch = batches.find((b) => b.id === batchId)
+    const batches = getBatches();
+    const currentBatch = batches.find((b) => b.id === batchId);
     if (!currentBatch) {
-      navigate(`/cities/${cityId}/batches`)
-      return
+      navigate(`/cities/${cityId}/batches`);
+      return;
     }
-    setBatch(currentBatch)
-    const loadedStudents = getStudentsByBatch(batchId)
-    setStudents(loadedStudents)
-  }, [batchId, cityId, navigate])
+    setBatch(currentBatch);
+    const loadedStudents = getStudentsByBatch(batchId);
+    setStudents(loadedStudents);
+  }, [batchId, cityId, navigate]);
 
   const handleSearch = (query) => {
-    setSearchQuery(query)
-  }
+    setSearchQuery(query);
+  };
 
   const filteredStudents = students.filter(student =>
     student.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
-  )
+  );
 
   const markAttendance = (studentId, isPresent) => {
-    updateStudentAttendance(studentId, currentDate, isPresent)
+    updateStudentAttendance(studentId, currentDate, isPresent);
     setStudents((prev) =>
       prev.map((student) => {
         if (student.id === studentId) {
@@ -48,27 +47,31 @@ function AttendancePage() {
               ...student.attendance,
               [currentDate]: isPresent,
             },
-          }
+          };
         }
-        return student
+        return student;
       })
-    )
-  }
+    );
+  };
 
   const navigateToStudentProfile = (studentId) => {
-    navigate(`/cities/${cityId}/batches/${batchId}/students/${studentId}`)
-  }
+    navigate(`/cities/${cityId}/batches/${batchId}/students/${studentId}`);
+  };
 
   const handleAddStudent = () => {
-    if (newStudentName.trim() === "") return
-    const newStudent = addStudent(batchId, newStudentName)
-    setStudents([...students, newStudent])
-    setIsModalOpen(false)
-    setNewStudentName("")
-  }
+    if (newStudentName.trim() === "") return;
+    const newStudent = addStudent(newStudentName, batchId);
+    setStudents([...students, newStudent]);
+    setNewStudentName("");
+  };
+
+  const handleDeleteStudent = (studentId) => {
+    deleteStudent(studentId);
+    setStudents(students.filter(student => student.id !== studentId));
+  };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" style={{ backgroundColor: "#FFF9C4" }}>
       <div className="container max-w-md mx-auto p-4">
         <Logo />
 
@@ -79,77 +82,115 @@ function AttendancePage() {
 
         <SearchBar placeholder="Search students..." onChange={handleSearch} />
 
-        <div className="flex justify-end mt-4 space-x-2">
-          <button
-            className="bg-success text-white rounded-full w-8 h-8 flex items-center justify-center"
-            onClick={() => setIsModalOpen(true)}
-          >
-            <FiPlus size={20} />
-          </button>
-          <button className="text-secondary rounded-full w-8 h-8 flex items-center justify-center">
-            <FiSliders size={20} />
-          </button>
-          <button className="bg-error text-white rounded-full w-8 h-8 flex items-center justify-center">
-            <FiX size={20} />
-          </button>
-        </div>
-
         <div className="mt-4 attendance-list">
+          <div className="attendance-item mb-3 flex flex-col items-center">
+            <input
+              type="text"
+              placeholder="Enter student name"
+              value={newStudentName}
+              onChange={(e) => setNewStudentName(e.target.value)}
+              className="input w-full rounded-xl mb-2 p-2 border border-gray-300"
+            />
+            <button onClick={handleAddStudent} className="btn btn-primary w-full rounded-xl py-2 flex items-center justify-center bg-green-500 text-white">
+              <FiPlus size={20} className="mr-2" />
+              Add
+            </button>
+          </div>
+
           {filteredStudents.map((student) => (
-            <div key={student.id} className="attendance-item">
-              <div className="text-2xl font-light cursor-pointer" onClick={() => navigateToStudentProfile(student.id)}>
+            <div 
+              key={student.id} 
+              className="attendance-item mb-3"
+              style={{ 
+                backgroundColor: "#F44336", 
+                padding: "10px", 
+                borderRadius: "8px",
+                color: "white",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center"
+              }}
+            >
+              <div 
+                className="text-2xl font-light cursor-pointer" 
+                onClick={() => navigateToStudentProfile(student.id)}
+              >
                 {student.name}
               </div>
               <div className="flex">
                 <button
-                  className={`status-button present ${student.attendance?.[currentDate] === true ? "opacity-100" : "opacity-50"}`}
+                  className={`status-button present mr-2`}
+                  style={{ 
+                    opacity: student.attendance?.[currentDate] === true ? 1 : 0.5,
+                    backgroundColor: "white",
+                    color: "green",
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                  }}
                   onClick={() => markAttendance(student.id, true)}
                 >
                   <FiCheck size={24} />
                 </button>
                 <button
-                  className={`status-button absent ${student.attendance?.[currentDate] === false ? "opacity-100" : "opacity-50"}`}
+                  className={`status-button absent mr-2`}
+                  style={{ 
+                    opacity: student.attendance?.[currentDate] === false ? 1 : 0.5,
+                    backgroundColor: "white",
+                    color: "red",
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                  }}
                   onClick={() => markAttendance(student.id, false)}
                 >
                   <FiX size={24} />
+                </button>
+                <button
+                  className="status-button text-red-500"
+                  style={{ 
+                    backgroundColor: "white",
+                    color: "#2196F3",
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                  }}
+                  onClick={() => handleDeleteStudent(student.id)}
+                >
+                  <FiTrash2 size={24} />
+                </button>
+                <button
+                  className="status-button view"
+                  style={{ 
+                    backgroundColor: "white",
+                    color: "#2196F3",
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                  }}
+                  onClick={() => navigateToStudentProfile(student.id)}
+                >
+                  <FiEye size={24} />
                 </button>
               </div>
             </div>
           ))}
         </div>
       </div>
-
-     
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-            <h2 className="text-2xl font-bold mb-4">Add New Student</h2>
-            <input
-              type="text"
-              className="w-full p-2 border border-gray-300 rounded-md mb-4"
-              placeholder="Enter student name"
-              value={newStudentName}
-              onChange={(e) => setNewStudentName(e.target.value)}
-            />
-            <div className="flex justify-end space-x-2">
-              <button
-                className="bg-success text-white px-4 py-2 rounded-md"
-                onClick={handleAddStudent}
-              >
-                Add
-              </button>
-              <button
-                className="bg-error text-white px-4 py-2 rounded-md"
-                onClick={() => setIsModalOpen(false)}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
-  )
+  );
 }
 
-export default AttendancePage
+export default AttendancePage;
