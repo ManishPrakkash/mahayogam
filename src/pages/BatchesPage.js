@@ -115,6 +115,4 @@ function BatchesPage() {
     </div>
   )
 }
-
 export default BatchesPage
-
