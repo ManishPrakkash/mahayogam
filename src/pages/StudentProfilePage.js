@@ -1,39 +1,38 @@
-import { useState, useEffect } from "react"
-import { useParams, useNavigate } from "react-router-dom"
-import { FiCheck, FiX } from "react-icons/fi"
-import { FiSunrise as Libra } from "react-icons/fi"
-import Logo from "../components/Logo"
-import { useAuth } from "../context/AuthContext"
-import { getStudent, updateStudentFee } from "../lib/data"
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { FiCheck, FiX, FiCamera } from "react-icons/fi";
+import Logo from "../components/Logo";
+import { useAuth } from "../context/AuthContext";
+import { getStudent, updateStudentFee } from "../lib/data";
 
 function StudentProfilePage() {
-  const [student, setStudent] = useState(null)
-  const { user } = useAuth()
-  const navigate = useNavigate()
-  const { cityId, batchId, studentId } = useParams()
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-  const currentMonthIndex = new Date().getMonth()
+  const [student, setStudent] = useState(null);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { cityId, batchId, studentId } = useParams();
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const currentMonthIndex = new Date().getMonth();
   const displayMonths = [
     months[currentMonthIndex],
     months[(currentMonthIndex - 1 + 12) % 12],
     months[(currentMonthIndex - 2 + 12) % 12],
     months[(currentMonthIndex - 3 + 12) % 12],
-  ]
+  ];
   
   useEffect(() => {
-    const loadedStudent = getStudent(studentId)
+    const loadedStudent = getStudent(studentId);
     if (!loadedStudent) {
-      navigate(`/cities/${cityId}/batches/${batchId}/attendance`)
-      return
+      navigate(`/cities/${cityId}/batches/${batchId}/attendance`);
+      return;
     }
-    setStudent(loadedStudent)
-  }, [studentId, cityId, batchId, navigate])
+    setStudent(loadedStudent);
+  }, [studentId, cityId, batchId, navigate]);
 
   const toggleFeeStatus = (month) => {
-    if (!student) return
+    if (!student) return;
 
-    const currentStatus = student.fees[month] || false
-    updateStudentFee(studentId, month, !currentStatus)
+    const currentStatus = student.fees[month] || false;
+    updateStudentFee(studentId, month, !currentStatus);
 
     setStudent((prev) => ({
       ...prev,
@@ -41,16 +40,33 @@ function StudentProfilePage() {
         ...prev.fees,
         [month]: !currentStatus,
       },
-    }))
-  }
+    }));
+  };
+
+  const handleProfileImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setStudent((prev) => ({
+          ...prev,
+          profileImage: reader.result,
+        }));
+        // Update local storage
+        const students = JSON.parse(localStorage.getItem("mahayogam-students")) || [];
+        const updatedStudents = students.map((s) => (s.id === studentId ? { ...s, profileImage: reader.result } : s));
+        localStorage.setItem("mahayogam-students", JSON.stringify(updatedStudents));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   if (!student) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   return (
     <div className="min-h-screen bg-[#f5e6cb]">
-
       <div className="container max-w-md mx-auto p-4">
         <Logo />
 
@@ -63,9 +79,10 @@ function StudentProfilePage() {
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="absolute -right-2 -bottom-2 w-10 h-10 rounded-full bg-[#f44336] text-white flex items-center justify-center">
-              {/* <Libra size={20} /> */}
-            </div>
+            <label className="absolute -right-2 -bottom-2 w-10 h-10 rounded-full bg-[#f44336] text-white flex items-center justify-center cursor-pointer">
+              <FiCamera size={20} />
+              <input type="file" className="hidden" onChange={handleProfileImageChange} />
+            </label>
           </div>
 
           <h2 className="text-2xl font-semibold mt-4 text-[#7a2a2a]">{student.name}</h2>
@@ -108,8 +125,8 @@ function StudentProfilePage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default StudentProfilePage
+export default StudentProfilePage;
 

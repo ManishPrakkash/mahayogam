@@ -36,11 +36,12 @@ function AttendancePage() {
     student.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
   );
 
-  const markAttendance = (studentId, isPresent) => {
-    updateStudentAttendance(studentId, currentDate, isPresent);
+  const toggleAttendance = (studentId) => {
     setStudents((prev) =>
       prev.map((student) => {
         if (student.id === studentId) {
+          const isPresent = !student.attendance?.[currentDate];
+          updateStudentAttendance(studentId, currentDate, isPresent);
           return {
             ...student,
             attendance: {
@@ -80,7 +81,7 @@ function AttendancePage() {
           <h2 className="text-3xl font-bold mt-2">{batch?.name}</h2>
         </div>
 
-        <SearchBar placeholder="Search students..." onChange={handleSearch} />
+        <SearchBar placeholder="Search students..." onChange={(e) => handleSearch(e.target.value)} />
 
         <div className="mt-4 attendance-list">
           <div className="attendance-item mb-3 flex flex-col items-center">
@@ -102,10 +103,10 @@ function AttendancePage() {
               key={student.id} 
               className="attendance-item mb-3"
               style={{ 
-                backgroundColor: "#F44336", 
+                backgroundColor: "#ffffff", 
                 padding: "10px", 
                 borderRadius: "8px",
-                color: "white",
+                color: "black",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center"
@@ -119,11 +120,11 @@ function AttendancePage() {
               </div>
               <div className="flex">
                 <button
-                  className={`status-button present mr-2`}
+                  className={`status-button mr-2`}
                   style={{ 
-                    opacity: student.attendance?.[currentDate] === true ? 1 : 0.5,
+                    opacity: student.attendance?.[currentDate] ? 1 : 0.5,
                     backgroundColor: "white",
-                    color: "green",
+                    color: student.attendance?.[currentDate] ? "green" : "red",
                     width: "32px",
                     height: "32px",
                     borderRadius: "50%",
@@ -131,26 +132,9 @@ function AttendancePage() {
                     alignItems: "center",
                     justifyContent: "center"
                   }}
-                  onClick={() => markAttendance(student.id, true)}
+                  onClick={() => toggleAttendance(student.id)}
                 >
-                  <FiCheck size={24} />
-                </button>
-                <button
-                  className={`status-button absent mr-2`}
-                  style={{ 
-                    opacity: student.attendance?.[currentDate] === false ? 1 : 0.5,
-                    backgroundColor: "white",
-                    color: "red",
-                    width: "32px",
-                    height: "32px",
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center"
-                  }}
-                  onClick={() => markAttendance(student.id, false)}
-                >
-                  <FiX size={24} />
+                  {student.attendance?.[currentDate] ? <FiCheck size={24} /> : <FiX size={24} />}
                 </button>
                 <button
                   className="status-button text-red-500"
