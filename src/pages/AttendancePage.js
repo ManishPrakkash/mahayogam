@@ -212,7 +212,7 @@ function AttendancePage() {
             >
               <Link 
                 to={`/cities/${cityId}/batches/${batchId}/students/${student.id}`} 
-                className="text-2xl font-light text-white cursor-pointer"
+                className="text-2xl font-light text-white cursor-pointer no-underline"
               >
                 {student.name}
               </Link>
